@@ -1,6 +1,6 @@
 from backend.infra import Minio
 
-minio_client = Minio()
+obs_client = Minio()
 
-def get_minio():
-	return minio_client
+def get_obs():
+	return obs_client

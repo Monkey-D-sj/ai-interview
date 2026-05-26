@@ -1,37 +1,46 @@
-from __future__ import annotations
-
 from io import BytesIO
 from pathlib import Path
 from typing import BinaryIO
 
 from backend.core import logger
-from backend.infra.db.minio import Minio
+from backend.infra.db.minio import ObjectStorage
+
 
 class QuestionBankService:
-    def __init__(self, minio: Minio):
-        self.minio = minio
+    def __init__(self, obs: ObjectStorage):
+        self.bucket = "uploads"
+        self.obs = obs
     
     def upload_file(
         self,
         file: BinaryIO,
         filename: str,
-        bucket: str = "uploads",
         content_type: str | None = None,
     ) -> str:
         data = file.read()
         size = len(data)
-        logger.info("Uploading {} ({}) to bucket {}", filename, _fmt_size(size), bucket)
+        logger.info("Uploading {} ({}) to bucket {}", filename, _fmt_size(size), self.bucket)
         
-        if not self.minio.bucket_exists(bucket):
-            self.minio.make_bucket(bucket)
-            logger.info("Created bucket {}", bucket)
+        if not self.obs.bucket_exists(self.bucket):
+            self.obs.make_bucket(self.bucket)
+            logger.info("Created bucket {}", self.bucket)
         
         ct = content_type or _guess_content_type(filename)
-        self.minio.put(bucket, filename, BytesIO(data), size, content_type=ct)
+        self.obs.put(self.bucket, filename, BytesIO(data), size, content_type=ct)
         
-        url = f"{bucket}/{filename}"
+        url = f"{self.bucket}/{filename}"
         logger.info("Upload complete: {}", url)
         return url
+    
+    def create_bank(
+        self,
+        files: list[str]
+    ) -> str:
+        logger.info("开始创建题库")
+        for file in files:
+            current_file = self.obs.get(self.bucket, file)
+        
+        return "创建成功"
 
 
 def _fmt_size(size: int) -> str:
