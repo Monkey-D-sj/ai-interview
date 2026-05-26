@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from io import BytesIO
-from pathlib import Path
 from typing import BinaryIO
+
+
+def _clean_endpoint(endpoint: str) -> str:
+    return re.sub(r"^https?://", "", endpoint.rstrip("/"))
 
 
 class ObjectStorage(ABC):
@@ -40,7 +44,7 @@ class Minio(ObjectStorage):
         from minio import Minio as _Minio
         if self._client:
             return
-        self._client = _Minio(endpoint, access_key=access_key, secret_key=secret_key, secure=secure)
+        self._client = _Minio(_clean_endpoint(endpoint), access_key=access_key, secret_key=secret_key, secure=secure)
 
     def bucket_exists(self, bucket: str) -> bool:
         return self._client.bucket_exists(bucket)
