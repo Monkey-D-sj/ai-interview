@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import BinaryIO
 
 from backend.core import logger
-from backend.infra.db.minio import ObjectStorage
+from backend.infra.db.object_storage import ObjectStorage
 
 
 class QuestionBankService:

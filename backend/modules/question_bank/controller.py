@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from backend.common import success
 from backend.core.db import get_obs
-from backend.infra.db.minio import ObjectStorage
+from backend.infra.db.object_storage import ObjectStorage
 from backend.modules.question_bank.service import QuestionBankService
 
 bank_router = APIRouter(prefix="/question_bank", tags=["upload"])
