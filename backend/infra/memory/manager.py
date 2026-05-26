@@ -1,8 +1,8 @@
-from infra import Chroma, InMemory
-from infra.embedding import embedding_func
-from infra.memory.strategy.base import MemoryRecord
-from infra.memory.strategy.long_memory import LongMemoryStrategy
-from infra.memory.strategy.short_memory import ShortMemoryStrategy
+from backend.infra import Chroma, InMemory
+from backend.infra.embedding import embedding_func
+from backend.infra.memory.strategy.base import MemoryRecord
+from backend.infra.memory.strategy.long_memory import LongMemoryStrategy
+from backend.infra.memory.strategy.short_memory import ShortMemoryStrategy
 
 
 class MemoryManager:

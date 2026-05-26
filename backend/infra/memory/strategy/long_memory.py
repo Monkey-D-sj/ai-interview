@@ -1,7 +1,7 @@
 from typing import Callable
 
-from infra.db import VectorDB
-from infra.memory.strategy.base import MemoryRecord
+from backend.infra.db import VectorDB
+from backend.infra.memory.strategy.base import MemoryRecord
 
 
 class LongMemoryStrategy:

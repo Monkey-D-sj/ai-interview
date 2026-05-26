@@ -1,7 +1,7 @@
 from dataclasses import asdict
 
-from infra.db import CacheDB
-from infra.memory.strategy.base import MemoryRecord
+from backend.infra.db import CacheDB
+from backend.infra.memory.strategy.base import MemoryRecord
 
 
 class ShortMemoryStrategy:
