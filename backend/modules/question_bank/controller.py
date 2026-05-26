@@ -15,7 +15,7 @@ async def upload(
     obs: ObjectStorage = Depends(get_obs)
 ) -> JSONResponse:
     service = QuestionBankService(obs=obs)
-    url = service.upload_file(file.file, file.filename or "unknown", bucket="rag", content_type=file.content_type)
+    url = service.upload_file(file.file, file.filename or "unknown", content_type=file.content_type)
     return success({"url": url, "filename": file.filename})
 
 
