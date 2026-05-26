@@ -11,3 +11,5 @@ class Settings(BaseSettings):
 	MINIO_URL: str
 	MINIO_ADMIN: str
 	MINIO_PASSWORD: str
+	
+settings = Settings()

@@ -5,46 +5,33 @@ from pathlib import Path
 from typing import BinaryIO
 
 from backend.core import logger
-from backend.core.setting import Settings
 from backend.infra.db.minio import Minio
 
-
-def upload_file(
-    file: BinaryIO,
-    filename: str,
-    bucket: str = "uploads",
-    content_type: str | None = None,
-) -> str:
-    settings = Settings()
-    data = file.read()
-    size = len(data)
-    logger.info("Uploading {} ({}) to bucket {}", filename, _fmt_size(size), bucket)
-
-    with Minio() as client:
-        client.connect(
-            endpoint=settings.MINIO_URL,
-            access_key=settings.MINIO_ADMIN,
-            secret_key=settings.MINIO_PASSWORD,
-        )
-        if not client.bucket_exists(bucket):
-            client.make_bucket(bucket)
+class QuestionBankService:
+    def __init__(self, minio: Minio):
+        self.minio = minio
+    
+    def upload_file(
+        self,
+        file: BinaryIO,
+        filename: str,
+        bucket: str = "uploads",
+        content_type: str | None = None,
+    ) -> str:
+        data = file.read()
+        size = len(data)
+        logger.info("Uploading {} ({}) to bucket {}", filename, _fmt_size(size), bucket)
+        
+        if not self.minio.bucket_exists(bucket):
+            self.minio.make_bucket(bucket)
             logger.info("Created bucket {}", bucket)
-
+        
         ct = content_type or _guess_content_type(filename)
-        client.put(bucket, filename, BytesIO(data), size, content_type=ct)
-
-    url = f"{settings.MINIO_URL}/{bucket}/{filename}"
-    logger.info("Upload complete: {}", url)
-    return url
-
-
-def upload_bytes(
-    data: bytes,
-    filename: str,
-    bucket: str = "uploads",
-    content_type: str | None = None,
-) -> str:
-    return upload_file(BytesIO(data), filename, bucket, content_type)
+        self.minio.put(bucket, filename, BytesIO(data), size, content_type=ct)
+        
+        url = f"{bucket}/{filename}"
+        logger.info("Upload complete: {}", url)
+        return url
 
 
 def _fmt_size(size: int) -> str:
